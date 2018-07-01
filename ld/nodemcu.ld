@@ -111,7 +111,7 @@ SECTIONS
     *libpp.a:*(.literal .text)
     *libgcc.a:*(.literal .text)
     *rboot.a:*(.literal .text)
-    
+
     /* Following SDK libraries have .text sections, but not included in iRAM: */
     /* *libat.a:*(.literal .text) - not used anywhere in NodeMCU */
     /* *libcrypto.a:*(.literal .text) - tested that safe to keep in iROM */
@@ -122,7 +122,7 @@ SECTIONS
     /* *libwpa.a:*(.literal .text) - tested that safe to keep in iROM */
     /* *libwps.a:*(.literal .text) - tested that safe to keep in iROM */
 
-    *(.iram.text .iram0.text)
+    *(.iram.text .iram0.text .iram0.text.*)
 
     *(.stub .gnu.warning .gnu.linkonce.literal.* .gnu.linkonce.t.*.literal .gnu.linkonce.t.*)
     
@@ -232,11 +232,11 @@ SECTIONS
 
     /* Link-time arrays containing the defs for the included modules */
     . = ALIGN(4);
-    lua_libs = ABSOLUTE(.);
+    lua_libs_base = ABSOLUTE(.);
     /* Allow either empty define or defined-to-1 to include the module */
     KEEP(*(.lua_libs))
     LONG(0) LONG(0) /* Null-terminate the array */
-    lua_rotable = ABSOLUTE(.);
+    lua_rotable_base = ABSOLUTE(.);
     KEEP(*(.lua_rotable))
     LONG(0) LONG(0) /* Null-terminate the array */
 
@@ -244,14 +244,15 @@ SECTIONS
     */libc.a:*.o(.text* .literal*)
     /* end libc functions */
 
-    . = ALIGN(0x1000);
+    /* Reserved areas, flash page aligned and last */
+    . = ALIGN(4096);
     *(.servercert.flash)
     *(.clientcert.flash)
- 
+     KEEP(*(.irom.reserved .irom.reserved.*))
+
     _irom0_text_end = ABSOLUTE(.);
     _flash_used_end = ABSOLUTE(.);
   } >irom0_0_seg :irom0_0_phdr =0xffffffff
-
 }
 
 /* get ROM code address */

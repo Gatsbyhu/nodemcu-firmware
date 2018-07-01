@@ -12,10 +12,9 @@
 #     a generated lib/image xxx.a ()
 #
 ifndef PDIR
-GEN_LIBS = libmisc.a
+GEN_LIBS = libdht.a
 endif
 
-STD_CFLAGS=-std=gnu11 -Wimplicit
 
 #############################################################
 # Configuration i.e. compile options etc.
@@ -43,10 +42,8 @@ INCLUDES += -I ./
 INCLUDES += -I ./include
 INCLUDES += -I ../include
 INCLUDES += -I ../../include
-INCLUDES += -I ../lua
-INCLUDES += -I ../platform
 INCLUDES += -I ../libc
-
+INCLUDES += -I ../platform
 PDIR := ../$(PDIR)
 sinclude $(PDIR)Makefile
 
