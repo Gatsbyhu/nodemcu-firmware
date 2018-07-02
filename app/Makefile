@@ -45,6 +45,7 @@ SUBDIRS= 					\
 	fatfs					\
 	esp-gdbstub				\
 	pm					\
+	misc                    \
 	$(OPT_SEL_MKTARGETS)
 
 endif # } PDIR
@@ -75,14 +76,11 @@ COMPONENTS_eagle.app.v6 = 			\
 	esp-gdbstub/libgdbstub.a		\
 	net/libnodemcu_net.a			\
 	mbedtls/libmbedtls.a      		\
-	rboot/rboot.a 				\
 	modules/libmodules.a			\
-	swTimer/libswtimer.a			\
-	misc/libmisc.a				\
-	sjson/libsjson.a			\
-    sqlite3/libsqlite3.a			\
-	libmain.a					\
-	$(OPT_SEL_COMPONENTS)
+	misc/libmisc.a			\
+	$(OPT_SEL_COMPONENTS)           \
+	libmain.a
+
 
 # Inspect the modules library and work out which modules need to be linked.
 # For each enabled module, a symbol name of the form XYZ_module_selected is
@@ -102,7 +100,6 @@ LINKFLAGS_eagle.app.v6 = 			\
 	-Wl,-static 				\
 	$(addprefix -u , $(SELECTED_MODULE_SYMS)) \
 	-Wl,--start-group 			\
-	$(DEP_LIBS_eagle.app.v6)		\
 	-lc 					\
 	-lgcc 					\
 	-lhal 					\

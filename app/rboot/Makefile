@@ -12,7 +12,7 @@
 #     a generated lib/image xxx.a ()
 #
 ifndef PDIR
-GEN_LIBS = rboot.a,libu8glib.a
+GEN_LIBS = librboot.a
 endif
 
 #############################################################

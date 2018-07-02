@@ -35,7 +35,7 @@
 // no performance loss.  However, you can define LUA_DWORD_ALIGNED_TVALUES and
 // this will force 16 byte TValues on FP builds.
 
-//#define LUA_NUMBER_INTEGRAL
+#define LUA_NUMBER_INTEGRAL
 //#define LUA_DWORD_ALIGNED_TVALUES
 
 
@@ -72,7 +72,7 @@
 // gives the fastest start-up and imaging times.
 
 #define BUILD_SPIFFS
-//#define SPIFFS_FIXED_LOCATION        0x100000
+#define SPIFFS_FIXED_LOCATION   	0x200000
 //#define SPIFFS_MAX_FILESYSTEM_SIZE    0x20000
 //#define SPIFFS_SIZE_1M_BOUNDARY
 #define SPIFFS_CACHE 1          // Enable if you use you SPIFFS in R/W mode
@@ -90,7 +90,7 @@
 // The SHA1 and MD5 function are implemented in the ROM BIOS. The MD2 and SHA2
 // are by firmware code, and can be enabled if you need this functionality.
 
-//#define CLIENT_SSL_ENABLE
+#define CLIENT_SSL_ENABLE
 //#define MD2_ENABLE
 #define SHA2_ENABLE
 #define SSL_BUFFER_SIZE 5120
@@ -195,6 +195,13 @@
 #define READLINE_INTERVAL        80
 #define STRBUF_DEFAULT_INCREMENT  3
 #define LUA_USE_BUILTIN_DEBUG_MINIMAL // for debug.getregistry() and debug.traceback()
+
+
+// spiffs position, relative to the start of the
+// 1mb chunk containing the corresponding rom
+//#define SPIFFS_FIXED_OFFSET_RBOOT 0x100000
+// spiffs size
+//#define SPIFFS_FIXED_SIZE 0xFA000
 
 #ifdef DEVELOPMENT_TOOLS
 #if defined(LUA_CROSS_COMPILER) || !defined(DEVELOPMENT_USE_GDB)
