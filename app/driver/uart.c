@@ -253,58 +253,45 @@ void ICACHE_FLASH_ATTR uart0_putc(const char c)
  * Parameters   : void *para - point to ETS_UART_INTR_ATTACH's arg
  * Returns      : NONE
 *******************************************************************************/
+extern void uart_on_char_cb(const uint8_t c);
 LOCAL void
+
 uart0_rx_intr_handler(void *para)
 {
-    /* uart0 and uart1 intr combine togther, when interrupt occur, see reg 0x3ff20020, bit2, bit0 represents
-     * uart1 and uart0 respectively
-     */
-    RcvMsgBuff *pRxBuff = (RcvMsgBuff *)para;
-    uint8 RcvChar;
-    bool got_input = false;
+  if(UART_FRM_ERR_INT_ST == (READ_PERI_REG(UART_INT_ST(UART0)) & UART_FRM_ERR_INT_ST))
+  {
+    WRITE_PERI_REG(UART_INT_CLR(UART0), UART_FRM_ERR_INT_CLR);
+  }
 
-    if (UART_RXFIFO_FULL_INT_ST != (READ_PERI_REG(UART_INT_ST(UART0)) & UART_RXFIFO_FULL_INT_ST)) {
-        return;
+  if(UART_RXFIFO_FULL_INT_ST == (READ_PERI_REG(UART_INT_ST(UART0)) & UART_RXFIFO_FULL_INT_ST))
+  {
+    ETS_UART_INTR_DISABLE();
+
+    while(READ_PERI_REG(UART_STATUS(UART0)) & (UART_RXFIFO_CNT << UART_RXFIFO_CNT_S))
+    {
+      uart_on_char_cb(READ_PERI_REG(UART_FIFO(UART0)) & 0xFF);
     }
 
+  }
+  else if(UART_RXFIFO_TOUT_INT_ST == (READ_PERI_REG(UART_INT_ST(UART0)) & UART_RXFIFO_TOUT_INT_ST))
+  {
+    ETS_UART_INTR_DISABLE();
+    while(READ_PERI_REG(UART_STATUS(UART0)) & (UART_RXFIFO_CNT << UART_RXFIFO_CNT_S))
+    {
+      uart_on_char_cb(READ_PERI_REG(UART_FIFO(UART0)) & 0xFF);
+    }
+
+  }
+
+  if(UART_RXFIFO_FULL_INT_ST == (READ_PERI_REG(UART_INT_ST(UART0)) & UART_RXFIFO_FULL_INT_ST))
+  {
     WRITE_PERI_REG(UART_INT_CLR(UART0), UART_RXFIFO_FULL_INT_CLR);
-
-    while (READ_PERI_REG(UART_STATUS(UART0)) & (UART_RXFIFO_CNT << UART_RXFIFO_CNT_S)) {
-        RcvChar = READ_PERI_REG(UART_FIFO(UART0)) & 0xFF;
-
-        /* you can add your handle code below.*/
-
-        *(pRxBuff->pWritePos) = RcvChar;
-
-        // insert here for get one command line from uart
-        if (RcvChar == '\r' || RcvChar == '\n' ) {
-            pRxBuff->BuffState = WRITE_OVER;
-        }
-
-        if (pRxBuff->pWritePos == (pRxBuff->pRcvMsgBuff + RX_BUFF_SIZE)) {
-            // overflow ...we may need more error handle here.
-            pRxBuff->pWritePos = pRxBuff->pRcvMsgBuff ;
-        } else {
-            pRxBuff->pWritePos++;
-        }
-
-        if (pRxBuff->pWritePos == pRxBuff->pReadPos){   // overflow one byte, need push pReadPos one byte ahead
-            if (pRxBuff->pReadPos == (pRxBuff->pRcvMsgBuff + RX_BUFF_SIZE)) {
-                pRxBuff->pReadPos = pRxBuff->pRcvMsgBuff ;
-            } else {
-                pRxBuff->pReadPos++;
-            }
-        }
-
-        got_input = true;
-    }
-
-    if (got_input && sig) {
-      if (isr_flag == *sig_flag) {
-        isr_flag ^= 0x01;
-        task_post_low (sig, 0x8000 | isr_flag << 14 | false);
-      }
-    }
+  }
+  else if(UART_RXFIFO_TOUT_INT_ST == (READ_PERI_REG(UART_INT_ST(UART0)) & UART_RXFIFO_TOUT_INT_ST))
+  {
+    WRITE_PERI_REG(UART_INT_CLR(UART0), UART_RXFIFO_TOUT_INT_CLR);
+  }
+  ETS_UART_INTR_ENABLE();
 }
 
 static void 
