@@ -225,7 +225,7 @@ sdk_pruned: $(SDK_DIR_DEPENDS) $(TOP_DIR)/sdk/.pruned-$(SDK_VER)
 
 $(TOP_DIR)/sdk/.extracted-$(SDK_BASE_VER): $(TOP_DIR)/cache/v$(SDK_FILE_VER).zip
 	mkdir -p "$(dir $@)"
-	(cd "$(dir $@)" && rm -fr esp_iot_sdk_v$(SDK_VER) ESP8266_NONOS_SDK-$(SDK_BASE_VER) && unzip $(TOP_DIR)/cache/v$(SDK_FILE_VER).zip ESP8266_NONOS_SDK-$(SDK_BASE_VER)/lib/* ESP8266_NONOS_SDK-$(SDK_BASE_VER)/ld/eagle.rom.addr.v6.ld ESP8266_NONOS_SDK-$(SDK_BASE_VER)/include/* ESP8266_NONOS_SDK-$(SDK_BASE_VER)/bin/esp_init_data_default_v05.bin)
+	(cd "$(dir $@)" && rm -fr esp_iot_sdk_v$(SDK_VER) ESP8266_NONOS_SDK-$(SDK_BASE_VER) && unzip $(TOP_DIR)/cache/v$(SDK_FILE_VER).zip ESP8266_NONOS_SDK-$(SDK_BASE_VER)/lib/* ESP8266_NONOS_SDK-$(SDK_BASE_VER)/ld/eagle.rom.addr.v6.ld ESP8266_NONOS_SDK-$(SDK_BASE_VER)/ld/eagle.app.v6.ld ESP8266_NONOS_SDK-$(SDK_BASE_VER)/include/* ESP8266_NONOS_SDK-$(SDK_BASE_VER)/bin/esp_init_data_default_v05.bin)
 	mv $(dir $@)/ESP8266_NONOS_SDK-$(SDK_BASE_VER) $(dir $@)/esp_iot_sdk_v$(SDK_BASE_VER)
 	touch $@
 

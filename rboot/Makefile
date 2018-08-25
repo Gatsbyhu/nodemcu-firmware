@@ -6,7 +6,7 @@
 RBOOT_BUILD_BASE ?= build
 RBOOT_FW_BASE    ?= firmware
 
-SDK_DIR=../sdk/esp_iot_sdk_v2.1.0
+SDK_DIR=../sdk/esp_iot_sdk_v2.2.1
 
 ifndef XTENSA_BINDIR
 CC := xtensa-lx106-elf-gcc
@@ -135,7 +135,7 @@ $(RBOOT_BUILD_BASE)/%.elf: $(RBOOT_BUILD_BASE)/%.o
 
 $(RBOOT_FW_BASE)/%.bin: $(RBOOT_BUILD_BASE)/%.elf
 	@echo "ET $@"
-	$(Q) esptool.py elf2image -o $@ -e 1 $<
+	$(Q) ../tools/esptool.py elf2image -o $@ -e 1 $<
 	$(Q) mv $@0x00000.bin $@
 	$(Q) rm -f $@*.bin
 
