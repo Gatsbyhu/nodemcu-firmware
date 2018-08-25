@@ -19,7 +19,7 @@ FLAVOR = debug
 
 ifndef PDIR # {
 GEN_IMAGES= eagle.app.v6.out
-GEN_BINS= eagle.app.v6.bin
+GEN_BINS= eagle.app.v6.bin rboot.bin
 OPT_MKTARGETS        := coap crypto dht http mqtt pcm rboot sjson sqlite3 tsl2561 websocket
 OPT_MKLIBTARGETS     := u8g2 ucg
 SEL_MKTARGETS        := $(shell $(CC) -E -dM include/user_modules.h | sed -n '/^\#define LUA_USE_MODULES_/{s/.\{24\}\(.*\)/\L\1/; p}')
